@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-expo-app@latest . --template blank --no-install)",
+      "Bash(npm view *)",
+      "Bash(rm -rf bbtrivia)",
+      "Bash(npx --yes create-expo-app@latest bbtrivia --template blank --no-install)",
+      "Bash(rm -rf /private/tmp/claude-501/-Users-mylaptop-Documents-apps-prototypes-Trivia-app-about-breaking-bad-tv-show/09660b71-e68c-4624-8f06-262c7cd5c2b3/scratchpad/bbtrivia/.git /private/tmp/claude-501/-Users-mylaptop-Documents-apps-prototypes-Trivia-app-about-breaking-bad-tv-show/09660b71-e68c-4624-8f06-262c7cd5c2b3/scratchpad/bbtrivia/.claude)",
+      "Bash(cp -R /private/tmp/claude-501/-Users-mylaptop-Documents-apps-prototypes-Trivia-app-about-breaking-bad-tv-show/09660b71-e68c-4624-8f06-262c7cd5c2b3/scratchpad/bbtrivia/. '/Users/mylaptop/Documents/apps prototypes/Trivia app about breaking bad tv show/')",
+      "Bash(npm install *)",
+      "Bash(npx expo *)",
+      "Bash(node -e ' *)",
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(node -e \"const b=require\\('expo/bundledNativeModules.json'\\); ['expo-linear-gradient','expo-haptics','@react-native-async-storage/async-storage','expo-status-bar'].forEach\\(k=>console.log\\(k.padEnd\\(45\\), b[k]||'NOT BUNDLED'\\)\\)\")",
+      "Bash(xargs kill -9)",
+      "WebSearch"
+    ]
+  }
+}
