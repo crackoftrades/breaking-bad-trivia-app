@@ -19,8 +19,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "expo export -p web",
-    "deploy": "expo export -p web && npx gh-pages@6 -d dist -t true"
+    "build:web": "expo export -p web"
   },
   "private": true
 }

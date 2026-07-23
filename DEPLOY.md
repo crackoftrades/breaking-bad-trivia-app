@@ -1,57 +1,58 @@
-# Publishing & links
+# Running & sharing the app
 
 Repo: **https://github.com/crackoftrades/breaking-bad-trivia-app**
-(This local folder is already linked to it as `origin`.)
 
-## Push the code with GitHub Desktop
+There are three ways to reach the app. Pick what fits.
 
-The repo on GitHub is currently empty — push this folder to fill it:
+## 1. Play it yourself on your phone (Expo Go, SDK 54)
 
-1. **GitHub Desktop → File → Add Local Repository…** → select this folder.
-2. It will show it's connected to `crackoftrades/breaking-bad-trivia-app` with
-   commits to push. Click **Push origin**.
-
-That's it. After it pushes:
-
-- **Repo (for the instructor to browse):**
-  https://github.com/crackoftrades/breaking-bad-trivia-app
-- **Download-as-zip link (for the instructor):**
-  https://github.com/crackoftrades/breaking-bad-trivia-app/archive/refs/heads/main.zip
-  (Same thing as the green **Code → Download ZIP** button. No `node_modules` —
-  they run `npm install` then `npx expo start`, per the README.)
-
-## Optional: the live playable web link (GitHub Pages)
-
-One terminal command (GitHub Desktop already stored your login, so it works):
+In a Terminal on this Mac:
 
 ```bash
 cd "/Users/mylaptop/Documents/apps prototypes/Trivia app about breaking bad tv show"
-npm run deploy
+npx expo start
 ```
 
-Then on github.com: **repo → Settings → Pages → Source: "Deploy from a branch"
-→ Branch: `gh-pages` / `(root)` → Save.** ~1 minute later your live link is:
+Then **scan the QR code** with the iPhone Camera (it opens Expo Go), or in Expo
+Go tap "Enter URL manually" and type your LAN link:
 
 ```
-https://crackoftrades.github.io/breaking-bad-trivia-app/
+exp://<your-mac-LAN-ip>:8081     (e.g. exp://172.16.107.21:8081)
 ```
 
-Open it on your iPhone in Safari — that's a playable link to send your teacher.
+Requirements: iPhone on the **same Wi-Fi** as the Mac, and an **Expo Go** build
+that supports **SDK 54** (keep Expo Go updated). Off Wi-Fi? Use
+`npx expo start --tunnel` instead (needs the tunnel service to be reachable).
 
-> The web path is set to `/breaking-bad-trivia-app/` in `app.json`
-> (`expo.experiments.baseUrl`) to match the repo name. If you ever rename the
-> repo, change that value too, or Pages will 404.
+> This only works while `expo start` is running on your Mac — it isn't a
+> permanent link. For a link you can send and forget, use Vercel below.
 
-## Re-deploying after changes
+## 2. Permanent web link (Vercel) — best to send an instructor
 
-- **Update the repo/zip:** commit in GitHub Desktop → **Push origin**.
-- **Update the live web link:** run `npm run deploy` again.
+The repo has a `vercel.json`, so Vercel builds the web version automatically.
+
+1. Go to **https://vercel.com/new** and sign in with GitHub.
+2. **Import** the `breaking-bad-trivia-app` repo.
+3. Leave the detected settings as-is (they come from `vercel.json`:
+   build `expo export -p web`, output `dist`) and click **Deploy**.
+
+You get a permanent URL like `https://breaking-bad-trivia-app.vercel.app` that
+opens on any iPhone in Safari — fully playable. Every future `git push`
+redeploys it automatically.
+
+## 3. Submit the code (GitHub zip)
+
+- **Browse:** https://github.com/crackoftrades/breaking-bad-trivia-app
+- **Download zip:** https://github.com/crackoftrades/breaking-bad-trivia-app/archive/refs/heads/main.zip
+
+No `node_modules` in the zip — the grader runs `npm install` then `npx expo
+start` (see the README).
 
 ## Good to know
 
-- **Questions are live from the API.** The web build reaches the Breaking Bad
-  API through a CORS proxy (`corsproxy.io`) because the API sends no CORS
-  headers. Reliable for a demo; if the link ever shows "Signal lost", that proxy
-  is the usual cause (tap Retry — the app also caches the last good data). The
-  native Expo Go build calls the API directly, no proxy.
+- **Questions are live from the API.** On the web (Vercel), the app reaches the
+  Breaking Bad API through a CORS proxy (`corsproxy.io`) because the API sends
+  no CORS headers. Reliable for a demo; if the page shows "Signal lost", that
+  proxy is the usual cause (tap Retry — the app also caches the last good data).
+  The native Expo Go build calls the API directly, no proxy.
 - No backend; your record is stored locally on the device/browser.
