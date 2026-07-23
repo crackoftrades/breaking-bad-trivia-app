@@ -18,15 +18,16 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { shuffle, shuffleOptions } from '../utils';
 
-const API_BASE = 'https://breaking-bad-api-six.vercel.app/api';
 const CACHE_KEY = '@bb_trivia_dataset_v2';
 const PRODUCTION = 'Breaking Bad'; // keep it on-theme; the API also covers BCS / El Camino
 
-// The API sends no CORS headers, so a browser blocks direct calls. Native apps
-// (iOS/Android) don't enforce CORS and hit it directly; only the web build
-// needs to route through a CORS proxy.
-const proxied = (url) =>
-  Platform.OS === 'web' ? `https://corsproxy.io/?url=${encodeURIComponent(url)}` : url;
+// The API sends no CORS headers, so a browser can't call it directly.
+//   - Web (Vercel): fetch the same-origin path `/bb-api/*`, which Vercel
+//     reverse-proxies to the real API (see the rewrites in vercel.json). Same
+//     origin means no CORS at all — no fragile third-party proxy involved.
+//   - Native (iOS/Android): no CORS enforcement, so call the API directly.
+const API_BASE =
+  Platform.OS === 'web' ? '/bb-api' : 'https://breaking-bad-api-six.vercel.app/api';
 
 // Category metadata drives the picker + labels. This is presentation config,
 // not question content — the questions themselves come from the API.
@@ -42,7 +43,7 @@ export const DIFFICULTY_LABELS = { 1: 'Cook', 2: 'Distributor', 3: 'Kingpin' };
 // ─────────────────────────── fetching ───────────────────────────
 
 async function fetchJson(path) {
-  const res = await fetch(proxied(`${API_BASE}${path}`));
+  const res = await fetch(`${API_BASE}${path}`);
   if (!res.ok) throw new Error(`HTTP ${res.status} on ${path}`);
   return res.json();
 }
