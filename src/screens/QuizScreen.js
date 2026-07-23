@@ -144,7 +144,9 @@ export default function QuizScreen({ questions, onFinish, onQuit }) {
   });
 
   const categoryLabel = useMemo(
-    () => CATEGORIES.find((c) => c.id === question.category)?.label ?? 'Trivia',
+    // Built-in categories map to a friendly label; AI rounds use their free-text
+    // category as-is.
+    () => CATEGORIES.find((c) => c.id === question.category)?.label ?? question.category ?? 'Trivia',
     [question.category]
   );
 

@@ -40,6 +40,22 @@ You get a permanent URL like `https://breaking-bad-trivia-app.vercel.app` that
 opens on any iPhone in Safari — fully playable. Every future `git push`
 redeploys it automatically.
 
+### Enable "Play with AI"
+
+The AI mode calls OpenRouter through a serverless function (`api/generate.js`)
+that keeps the key server-side. To switch it on:
+
+1. Get a free key at **https://openrouter.ai/keys**.
+2. In Vercel → **Project → Settings → Environment Variables**, add
+   **`OPENROUTER_API_KEY`** = your key (all environments).
+3. **Redeploy** (Deployments → ⋯ → Redeploy, or just `git push`).
+
+It uses the free model `openai/gpt-oss-20b:free` by default (override with an
+optional `OPENROUTER_MODEL` env var). Until the key is set, AI mode shows a clear
+"not configured" message; the General Knowledge game works regardless.
+On a phone via Expo Go, AI mode also needs `EXPO_PUBLIC_API_ORIGIN` set to your
+Vercel URL so the app can reach the function — the web version needs nothing extra.
+
 ## 3. Submit the code (GitHub zip)
 
 - **Browse:** https://github.com/crackoftrades/breaking-bad-trivia-app

@@ -1,10 +1,10 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Button from '../components/Button';
 import ElementTile from '../components/ElementTile';
 import { colors, radius, spacing } from '../theme';
 
-export default function HomeScreen({ stats, questionCount = 0, onStart, onStats }) {
+export default function HomeScreen({ stats, questionCount = 0, onStart, onStats, onBack }) {
   const accuracy = stats.totalAnswered
     ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100)
     : 0;
@@ -14,6 +14,12 @@ export default function HomeScreen({ stats, questionCount = 0, onStart, onStats 
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
+      {onBack && (
+        <Pressable onPress={onBack} hitSlop={12} style={styles.back}>
+          <Text style={styles.backText}>‹ Modes</Text>
+        </Pressable>
+      )}
+
       <View style={styles.logoRow}>
         <ElementTile symbol="Br" name="Bromine" number={35} size={78} tint={colors.greenDeep} />
         <Text style={styles.logoWord}>eaking</Text>
@@ -65,10 +71,12 @@ function Stat({ label, value }) {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: spacing(3),
-    paddingTop: spacing(4),
+    paddingTop: spacing(2),
     paddingBottom: spacing(5),
     alignItems: 'center',
   },
+  back: { alignSelf: 'flex-start', paddingVertical: 6, marginBottom: spacing(1) },
+  backText: { color: colors.textDim, fontSize: 16, fontWeight: '600' },
   logoRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' },
   logoWord: {
     color: colors.text,
