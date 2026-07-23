@@ -22,7 +22,7 @@
       "favicon": "./assets/favicon.png"
     },
     "experiments": {
-      "baseUrl": "/breaking-bad-trivia/"
+      "baseUrl": "/breaking-bad-trivia-app/"
     }
   }
 }

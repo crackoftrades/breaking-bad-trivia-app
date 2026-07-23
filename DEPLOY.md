@@ -1,70 +1,57 @@
-# Publishing & the live link
+# Publishing & links
 
-This repo is ready to publish. I couldn't do the GitHub steps from my session
-(they need your GitHub login), so here are the exact commands — it's ~5 minutes.
+Repo: **https://github.com/crackoftrades/breaking-bad-trivia-app**
+(This local folder is already linked to it as `origin`.)
 
-## What the "live link" actually is
+## Push the code with GitHub Desktop
 
-This is a **native Expo app**. There are two ways to play it on an iPhone:
+The repo on GitHub is currently empty — push this folder to fill it:
 
-| Way | Link you can send | Notes |
-|-----|-------------------|-------|
-| **Web build → GitHub Pages** | ✅ permanent URL, opens in Safari | This guide. Fully playable in the phone browser. |
-| **Expo Go** (`npx expo start`) | ❌ only while your Mac is running | The true native app. Not a shareable permanent link. |
+1. **GitHub Desktop → File → Add Local Repository…** → select this folder.
+2. It will show it's connected to `crackoftrades/breaking-bad-trivia-app` with
+   commits to push. Click **Push origin**.
 
-For sending to a teacher, use the **GitHub Pages** link below.
+That's it. After it pushes:
 
-## Step 1 — Create the repo on GitHub
+- **Repo (for the instructor to browse):**
+  https://github.com/crackoftrades/breaking-bad-trivia-app
+- **Download-as-zip link (for the instructor):**
+  https://github.com/crackoftrades/breaking-bad-trivia-app/archive/refs/heads/main.zip
+  (Same thing as the green **Code → Download ZIP** button. No `node_modules` —
+  they run `npm install` then `npx expo start`, per the README.)
 
-Create a **new, empty, public** repo named exactly **`breaking-bad-trivia`**.
-(The name matters — the web build's asset paths are set to `/breaking-bad-trivia/`.
-If you use a different name, change `expo.experiments.baseUrl` in `app.json` to
-`/<your-repo-name>/` and rebuild.)
+## Optional: the live playable web link (GitHub Pages)
 
-Do **not** add a README/license/.gitignore on GitHub — this repo already has them.
-
-## Step 2 — Push the source
-
-```bash
-git remote add origin https://github.com/<your-username>/breaking-bad-trivia.git
-git push -u origin main
-```
-
-## Step 3 — Deploy the web build to GitHub Pages
+One terminal command (GitHub Desktop already stored your login, so it works):
 
 ```bash
+cd "/Users/mylaptop/Documents/apps prototypes/Trivia app about breaking bad tv show"
 npm run deploy
 ```
 
-This builds the static site and pushes it to a `gh-pages` branch. (It uses
-`npx gh-pages`, which will download that helper the first time.)
-
-## Step 4 — Turn Pages on
-
-On GitHub: **Settings → Pages → Build and deployment → Source: "Deploy from a
-branch" → Branch: `gh-pages` / `(root)` → Save.**
-
-Wait ~1 minute, then your live link is:
+Then on github.com: **repo → Settings → Pages → Source: "Deploy from a branch"
+→ Branch: `gh-pages` / `(root)` → Save.** ~1 minute later your live link is:
 
 ```
-https://<your-username>.github.io/breaking-bad-trivia/
+https://crackoftrades.github.io/breaking-bad-trivia-app/
 ```
 
-Open it on your iPhone (Safari) — that's the link to send your teacher.
+Open it on your iPhone in Safari — that's a playable link to send your teacher.
+
+> The web path is set to `/breaking-bad-trivia-app/` in `app.json`
+> (`expo.experiments.baseUrl`) to match the repo name. If you ever rename the
+> repo, change that value too, or Pages will 404.
 
 ## Re-deploying after changes
 
-```bash
-npm run deploy      # rebuild + republish the web link
-git add -A && git commit -m "..." && git push   # update the source
-```
+- **Update the repo/zip:** commit in GitHub Desktop → **Push origin**.
+- **Update the live web link:** run `npm run deploy` again.
 
 ## Good to know
 
 - **Questions are live from the API.** The web build reaches the Breaking Bad
   API through a CORS proxy (`corsproxy.io`) because the API sends no CORS
-  headers and browsers require them. It's a free third-party service — reliable
-  for a demo, but if the link ever shows "Signal lost", that proxy is the usual
-  cause (tap Retry; the app also caches the last good data). The **native** Expo
-  Go build calls the API directly and doesn't use the proxy.
-- The app has no backend and stores your record locally on the device/browser.
+  headers. Reliable for a demo; if the link ever shows "Signal lost", that proxy
+  is the usual cause (tap Retry — the app also caches the last good data). The
+  native Expo Go build calls the API directly, no proxy.
+- No backend; your record is stored locally on the device/browser.
