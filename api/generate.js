@@ -58,10 +58,18 @@ Rules:
 - "fact" is one short interesting sentence about the answer
 - no markdown, no commentary — only the JSON object`;
 
+  const swapHint =
+    ' Try again, or set OPENROUTER_MODEL to a fast, reliable model like openai/gpt-4o-mini.';
+
+  // Abort before Vercel's function limit so we return a clear message instead of
+  // a raw 504 when a (typically free) model hangs.
   let aiRes;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 45000);
   try {
     aiRes = await fetch(OPENROUTER_URL, {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
@@ -81,28 +89,41 @@ Rules:
         temperature: 0.8,
       }),
     });
-  } catch {
-    res.status(502).json({ error: 'Could not reach OpenRouter. Check your connection and try again.' });
+  } catch (e) {
+    clearTimeout(timer);
+    const aborted = e && e.name === 'AbortError';
+    res.status(502).json({
+      error: aborted
+        ? `The model "${model}" took too long to respond (free models are often heavily rate-limited).${swapHint}`
+        : 'Could not reach OpenRouter. Check your connection and try again.',
+    });
     return;
   }
+  clearTimeout(timer);
+
+  const rawText = await aiRes.text().catch(() => '');
 
   if (!aiRes.ok) {
-    const detail = await aiRes.text().catch(() => '');
     const hint =
       aiRes.status === 401
         ? ' (the OPENROUTER_API_KEY looks invalid)'
         : aiRes.status === 402
         ? ' (your OpenRouter account is out of credits)'
+        : aiRes.status === 429
+        ? ` (rate-limited — free models throttle hard).${swapHint}`
         : '';
-    res.status(502).json({ error: `OpenRouter error ${aiRes.status}${hint}.`, detail: detail.slice(0, 300) });
+    res.status(502).json({ error: `OpenRouter error ${aiRes.status}${hint}.`, detail: rawText.slice(0, 300) });
     return;
   }
 
   let payload;
   try {
-    payload = await aiRes.json();
+    payload = JSON.parse(rawText);
   } catch {
-    res.status(502).json({ error: 'OpenRouter returned an unreadable response.' });
+    res.status(502).json({
+      error: `The model "${model}" returned a non-JSON response (free models often do this when overloaded).${swapHint}`,
+      detail: rawText.slice(0, 300),
+    });
     return;
   }
 
