@@ -17,7 +17,9 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  // Trim to survive a stray newline/space when the key is pasted into Vercel —
+  // a common cause of "Missing Authentication header" from OpenRouter.
+  const apiKey = (process.env.OPENROUTER_API_KEY || '').trim();
   if (!apiKey) {
     res.status(500).json({
       error:
