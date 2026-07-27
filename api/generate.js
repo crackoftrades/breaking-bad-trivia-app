@@ -12,6 +12,21 @@
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 module.exports = async function handler(req, res) {
+  // TEMP diagnostic: reports only whether the key is present/well-formed — never
+  // the key itself. Remove after debugging.
+  if (req.query && req.query.debug === '1') {
+    const raw = process.env.OPENROUTER_API_KEY;
+    res.status(200).json({
+      hasKey: typeof raw === 'string' && raw.length > 0,
+      keyLength: typeof raw === 'string' ? raw.length : 0,
+      startsWithSkOr: typeof raw === 'string' && raw.trim().startsWith('sk-or-'),
+      hasSurroundingWhitespace: typeof raw === 'string' && raw !== raw.trim(),
+      hasQuotes: typeof raw === 'string' && /^["']|["']$/.test(raw.trim()),
+      model: process.env.OPENROUTER_MODEL || '(using code default)',
+    });
+    return;
+  }
+
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed. Use POST.' });
     return;
