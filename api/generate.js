@@ -12,21 +12,6 @@
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 module.exports = async function handler(req, res) {
-  // TEMP diagnostic: reports only whether the key is present/well-formed — never
-  // the key itself. Remove after debugging.
-  if (req.query && req.query.debug === '1') {
-    const raw = process.env.OPENROUTER_API_KEY;
-    res.status(200).json({
-      hasKey: typeof raw === 'string' && raw.length > 0,
-      keyLength: typeof raw === 'string' ? raw.length : 0,
-      startsWithSkOr: typeof raw === 'string' && raw.trim().startsWith('sk-or-'),
-      hasSurroundingWhitespace: typeof raw === 'string' && raw !== raw.trim(),
-      hasQuotes: typeof raw === 'string' && /^["']|["']$/.test(raw.trim()),
-      model: process.env.OPENROUTER_MODEL || '(using code default)',
-    });
-    return;
-  }
-
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed. Use POST.' });
     return;
@@ -62,11 +47,9 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // body.model override is a TEMP testing hook — remove after picking a model.
-  const model =
-    (body && typeof body.model === 'string' && body.model.trim()) ||
-    process.env.OPENROUTER_MODEL ||
-    'openai/gpt-oss-20b:free';
+  // Default to a free model that's confirmed working on OpenRouter; override with
+  // the OPENROUTER_MODEL env var (e.g. a paid model like openai/gpt-4o-mini).
+  const model = process.env.OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
 
   const instructions = `Generate exactly 10 multiple-choice trivia questions about "${category}".
 Return ONLY a JSON object of exactly this shape:
