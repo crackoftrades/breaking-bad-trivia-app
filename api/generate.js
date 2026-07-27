@@ -62,7 +62,11 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const model = process.env.OPENROUTER_MODEL || 'openai/gpt-oss-20b:free';
+  // body.model override is a TEMP testing hook — remove after picking a model.
+  const model =
+    (body && typeof body.model === 'string' && body.model.trim()) ||
+    process.env.OPENROUTER_MODEL ||
+    'openai/gpt-oss-20b:free';
 
   const instructions = `Generate exactly 10 multiple-choice trivia questions about "${category}".
 Return ONLY a JSON object of exactly this shape:
