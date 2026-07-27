@@ -65,11 +65,12 @@ Rules:
   const swapHint =
     ' Try again, or set OPENROUTER_MODEL to a fast, reliable model like openai/gpt-4o-mini.';
 
-  // Abort before Vercel's function limit so we return a clear message instead of
-  // a raw 504 when a (typically free) model hangs.
+  // Abort a couple of seconds before Vercel's 60s function limit so we return a
+  // clear message instead of a raw 504. Free models are slow (often 30–55s), so
+  // give them as much of the window as we safely can.
   let aiRes;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 45000);
+  const timer = setTimeout(() => controller.abort(), 57000);
   try {
     aiRes = await fetch(OPENROUTER_URL, {
       method: 'POST',
